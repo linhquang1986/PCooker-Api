@@ -49,10 +49,60 @@ exports.addMenu = (req, res) => {
 exports.addDrink = (req, res) => {
     let drink = new Drink({
         name: req.body.name,
-        menu: req.body.menuId
+        menu: req.body.menuId,
+        price: req.body.price
     })
     drink.save(err => {
         return res.status(400).send(err);
         res.status(200) && res.json({ success: true });
+    })
+}
+
+exports.editMenu = (req, res) => {
+    let id = req.params.id;
+    Menu.findById(id, (err, menu) => {
+        if (err) return res.status(400).send(err);
+        menu.name = req.body.name;
+        menu.save((err, updateMenu) => {
+            if (err) return res.status(400).send(err);
+            res.status(200).send(updateMenu);
+        })
+    })
+}
+
+exports.editDrink = (req, res) => {
+    let id = req.params.id;
+    Drink.findById(id, (err, drink) => {
+        drink.name = req.body.name;
+        if (req.body.menuId && req.body.menuId != '')
+            drink.menu = req.body.menuId;
+        if (req.body.price && req.body.price != '')
+            drink.price = req.body.price;
+        drink.save((err, updateDrink) => {
+            if (err) return res.status(400).send(err);
+            res.status(200).send(updateDrink);
+        })
+    })
+}
+
+exports.delMenu = (req, res) => {
+    let id = req.params.id;
+    Drink.find({ menu: id }, (err, drinks) => {
+        if (drinks.lenght === 0) {
+            Menu.findOneAndRemove({ _id: ObjectId(id) }, err => {
+                if (err) return res.status(400).send(err);
+                res.status(200).send('Delete successfully');
+            })
+        } else {
+            res.status(400).send('Can not delete, Please clear all constraints!')
+        }
+    })
+}
+
+exports.delDrink = (req, res) => {
+    let id = req.params.id;
+    Drink.findOneAndRemove({ _id: ObjectId(id) }, err => {
+        if (err) return res.status(400).send(err);
+        res.status(200).send('Delete successfully');
     })
 }

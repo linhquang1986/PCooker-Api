@@ -14,6 +14,14 @@ router.get('/getAllMenu', drinkCtrl.getAllMenu)
 
 router.get('/getAllDrink', drinkCtrl.getAllDrink)
 
+router.put('/editMenu/:id', drinkCtrl.editMenu)
+
+router.put('/editDrink/:id', drinkCtrl.editDrink)
+
+router.delete('/delMenu/:id', drinkCtrl.delMenu);
+
+router.delete('/delDrink/:id', drinkCtrl.delDrink);
+
 router.get('/getDrinkByMenu/:id', drinkCtrl.getDrinkByMenu)
 
 module.exports = router;

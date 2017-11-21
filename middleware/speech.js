@@ -25,8 +25,7 @@ module.exports = class {
         let that = this;
         return that.recognizeStream.streamingRecognize(that.request)
             .on('error', (err) => {
-                console.log(`ERROR: On Streaming recognize stream: ${err}`);
-                return ws.terminate();
+                return ws.send(`[Error]:${err}`);
             })
             .on('data', (data) => {
                 if (data.results.length > 0) {
