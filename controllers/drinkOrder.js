@@ -88,13 +88,13 @@ exports.editDrink = (req, res) => {
 exports.delMenu = (req, res) => {
     let id = req.params.id;
     Drink.find({ menu: id }, (err, drinks) => {
-        if (drinks.lenght === 0) {
+        if (drinks.length === 0) {
             Menu.findOneAndRemove({ _id: ObjectId(id) }, err => {
                 if (err) return res.status(400).send(err);
-                res.status(200).send('Delete successfully');
+                res.status(200).send({ message: 'Delete successfully', success: true });
             })
         } else {
-            res.status(400).send('Can not delete, Please clear all constraints!')
+            res.status(400).send({ message: 'Can not delete, Please clear all constraints!', success: true })
         }
     })
 }
@@ -103,6 +103,6 @@ exports.delDrink = (req, res) => {
     let id = req.params.id;
     Drink.findOneAndRemove({ _id: ObjectId(id) }, err => {
         if (err) return res.status(400).send(err);
-        res.status(200).send('Delete successfully');
+        res.status(200).send({ message: 'Delete successfully', success: true });
     })
 }

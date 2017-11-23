@@ -8,7 +8,7 @@ router.use(header);
 
 router.post('/addMenu', drinkCtrl.addMenu)
 
-router.post('/addDrinks', drinkCtrl.addDrink)
+router.post('/addDrink', drinkCtrl.addDrink)
 
 router.get('/getAllMenu', drinkCtrl.getAllMenu)
 
