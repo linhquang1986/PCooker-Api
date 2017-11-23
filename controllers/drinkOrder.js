@@ -42,7 +42,7 @@ exports.addMenu = (req, res) => {
         name: req.body.name
     })
     menu.save(err => {
-        return res.status(400).send(err);
+        if (err) return res.status(400).send(err);
         res.status(200) && res.json({ success: true });
     })
 }
@@ -53,7 +53,7 @@ exports.addDrink = (req, res) => {
         price: req.body.price
     })
     drink.save(err => {
-        return res.status(400).send(err);
+        if (err) return res.status(400).send(err);
         res.status(200) && res.json({ success: true });
     })
 }

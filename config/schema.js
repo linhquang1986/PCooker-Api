@@ -170,18 +170,5 @@ module.exports = {
     intercom: {
       id: { default: null, format: String }
     }
-  },
-  google_api: {
-    vision: {
-      key_url: { default: null, format: String },
-      project_id: { default: null, format: String }
-    },
-    speech: {
-      key_url: { default: null, format: String },
-      project_id: { default: null, format: String }
-    }
-  },
-  wit_ai: {
-    myAccessToken: { default: null, format: String }
   }
 }

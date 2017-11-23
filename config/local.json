@@ -162,18 +162,5 @@
     "intercom": {
       "id": "b3bssrb1"
     }
-  },
-  "google_api":{
-    "vision":{
-      "key_url": "./config/JafficVietNam-key.json",
-      "project_id":"jafficvietnam"
-    },
-    "speech":{
-      "key_url": "./config/RecognitionVietNamese.json",
-      "project_id":"recognitionvietnamese"
-    }
-  },
-  "wit_ai":{
-    "myAccessToken":"LL3HW5N2Z5N2C46OAV7SC4PONCFDXUNF"
   }
 }

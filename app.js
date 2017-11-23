@@ -20,10 +20,6 @@ let listener = app.listen(port, () => {
     console.log('Server running on localhost:' + listener.address().port);
     //opn('http://localhost:5000');
 });
-// connetion Speech Client socket
-var middleWebS = require('./middleware').webS;
-var webS = new middleWebS(listener);
-webS.connectionSpeechClient();
 
 
 module.exports = app;// for testing
