@@ -53,6 +53,9 @@
                         <li>
                             <a onclick="selectTab(formDrink)" href="#">Drink</a>
                         </li>
+                        <li>
+                            <a onclick="selectTab(formOption)" href="#">Option</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- /.navbar-collapse -->
@@ -130,6 +133,41 @@
                 </div>
             </div>
         </div>
+        <div id="formOption" class="formOption" hidden>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    Option Management
+                </div>
+                <div class="panel-body">
+                    <form id="_formOption">
+                        <label class="label label-danger error" hidden></label>
+                        <div class="form-group">
+                            <label for="optionValue">Tên lựa chọn</label>
+                            <input type="text" class="form-control" id="optionValue" name="value" placeholder="Tên lựa chọn">
+                        </div>
+                        <div class="form-group">
+                            <label for="question">Câu hỏi khi thiếu lựa chọn</label>
+                            <input type="text" class="form-control" id="question" name="question" placeholder="Câu hỏi khi thiếu lựa chọn">
+                        </div>
+                        <button type="button" onclick="submitFormOption(_formOption)" class="btn btn-success">Submit</button>
+                        <button type="button" onclick="clearForm(_formOption)" class="btn btn-primary">Clear</button>
+                    </form>
+                    <table id="tableOption" class="table">
+                        <thead>
+                            <tr>
+                                <td>STT</td>
+                                <td>Tên lựa chọn</td>
+                                <td>Câu hỏi</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -140,6 +178,7 @@
     <script src="js/manager/index.js"></script>
     <script src="js/manager/menu.js"></script>
     <script src="js/manager/drink.js"></script>
+    <script src="js/manager/option.js"></script>
 </body>
 
 </html>

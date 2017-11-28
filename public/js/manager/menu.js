@@ -47,6 +47,7 @@ var clearForm = (form) => {
     $(form).find('input').val('');
     editMenu = null;
     editDrink = null;
+    editOption = null;
 }
 //handle submit
 var submitForm = (form) => {

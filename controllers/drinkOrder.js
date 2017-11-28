@@ -1,6 +1,7 @@
 var drinkMenu = require('../models').drinksDb;
 var Menu = drinkMenu.Menu;
 var Drink = drinkMenu.Drink;
+var Option = drinkMenu.Option;
 var ObjectId = require('mongoose').Types.ObjectId;
 // Menu.remove({}, (err, row) => {
 //     if (err) {
@@ -104,5 +105,44 @@ exports.delDrink = (req, res) => {
     Drink.findOneAndRemove({ _id: ObjectId(id) }, err => {
         if (err) return res.status(400).send(err);
         res.status(200).send({ message: 'Delete successfully', success: true });
+    })
+}
+
+exports.getAllOption = (req, res) => {
+    Option.find({}, (err, options) => {
+        if (err) return res.status(400) && res.json(err);
+        res.json(options)
+    })
+}
+exports.delOption = (req, res) => {
+    let id = req.params.id;
+    Option.findOneAndRemove({ _id: ObjectId(id) }, err => {
+        if (err) return res.status(400).send(err);
+        res.status(200).send({ message: 'Delete successfully', success: true });
+    })
+}
+
+exports.editOption = (req, res) => {
+    let id = req.params.id;
+    Option.findById(id, (err, option) => {
+        if (req.body.value && req.body.value != '')
+            option.value = req.body.value;
+        if (req.body.question && req.body.question != '')
+            option.question = req.body.question;
+        option.save((err, updateOption) => {
+            if (err) return res.status(400).send(err);
+            res.status(200).send(updateOption);
+        })
+    })
+}
+
+exports.addOption = (req, res) => {
+    let option = new Option({
+        value: req.body.value,
+        question: req.body.question
+    })
+    option.save(err => {
+        if (err) return res.status(400).send(err);
+        res.status(200) && res.json({ success: true });
     })
 }

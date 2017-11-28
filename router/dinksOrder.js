@@ -24,4 +24,13 @@ router.delete('/delDrink/:id', drinkCtrl.delDrink);
 
 router.get('/getDrinkByMenu/:id', drinkCtrl.getDrinkByMenu)
 
+router.get('/getAllOption', drinkCtrl.getAllOption);
+
+router.post('/addOption', drinkCtrl.addOption);
+
+router.delete('/delOption/:id', drinkCtrl.delOption);
+
+router.put('/editOption/:id', drinkCtrl.editOption);
+
+
 module.exports = router;
