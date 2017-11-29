@@ -170,5 +170,8 @@ module.exports = {
     intercom: {
       id: { default: null, format: String }
     }
+  },
+  witAi: {
+    serverAccessToken: { default: null, format: String }
   }
 }

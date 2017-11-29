@@ -14,7 +14,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 // router
-app.use('/', require('./router'));
+var router = require('./router');
+app.use('/', router);
 app.set('port', port)
 
 let listener = app.listen(port, () => {
