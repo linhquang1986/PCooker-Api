@@ -2,12 +2,14 @@
 
 var editDrink = null;
 var dataDrink = null;
+var drinkOptions = [];
+var expressionsD = [];
 var renderTableDrink = data => {
     let drinks = $('#tableDrink');
     drinks.find('tbody').empty();
     for (let i = 0; i < data.length; i++) {
         let index = i + 1;
-        let intent = `<tr index="${i}"><td>${index}</td><td>${data[i].name}</td><td>${data[i].price}</td><td>${data[i].menuName}</td><td><button onclick="delDrink('${data[i]._id}')" class='btn btn-danger'>Del</button></td></tr>`
+        let intent = `<tr index="${i}"><td>${index}</td><td>${data[i].name}</td><td>${data[i].price}</td><td>${data[i].menuName}</td><td>${data[i].optionsName}</td><td><button onclick="delDrink('${data[i]._id}')" class='btn btn-danger'>Del</button></td></tr>`
         drinks.append(intent);
     }
     drinks.children('tbody').find('tr').click(e => {
@@ -17,14 +19,38 @@ var renderTableDrink = data => {
             $('#dirnkName').val(editDrink.name);
             $('#priceDrink').val(editDrink.price);
             $('#menuDrink').val(editDrink.menu).change()
+            setCheckbox(editDrink.options)
         }
     })
 }
+var setCheckbox = (data) => {
+    options = data.slice();
+    let dropdow = $('#dropdowOption')
+    dropdow.find('input').prop('checked', false);
+    let lis = dropdow.find('li');
+    if (lis.length > 0)
+        lis.each(li => {
+            let a = $(lis[li]).find('a');
+            let value = a.attr('data-value')
+            data.forEach(d => {
+                if (d == value) {
+                    a.children('input').prop('checked', true);
+                }
+            })
+        })
+}
 var delDrink = (id) => {
+    let rs = dataDrink.find(d => { return d._id == id });
+    //del drink to database
     _delete('/drink/delDrink/', id, (res) => {
-        if (res.success)
+        if (res.success) {
+            //del drink to wit ai
+            post('/wit/delValue', { entitiId: "drinks", value: rs.name }, res => { })
             getAllDrink();
+        }
+
     })
+
 }
 var submitFormDrink = (form) => {
     let error = false;
@@ -32,7 +58,8 @@ var submitFormDrink = (form) => {
     let drinkData = {
         name: null,
         price: null,
-        menuId: null
+        menuId: null,
+        options: drinkOptions
     }
     //validate
     new Promise((resolve, reject) => {
@@ -59,14 +86,37 @@ var submitFormDrink = (form) => {
         if (!error) {
             //check add or edit
             if (!editDrink)
+                // add drink to database
                 post('/drink/addDrink', drinkData, (res) => {
+                    //add drink to wit ai
+                    post('/wit/addValue',
+                        {
+                            entitiId: "drinks",
+                            value: drinkData.name,
+                            expressions: expressionsD
+                        }, res => {
+                            console.log(res)
+                        })
                     clearForm(form);
                     getAllDrink();
                 })
             else {
-                put('/drink/editDrink/', editDrink._id, drinkData, (res) => {
-                    clearForm(form);
-                    getAllDrink();
+                //del drink to wit ai
+                post('/wit/delValue', { entitiId: "drinks", value: editDrink.name }, res => {
+                    //update drink to database
+                    put('/drink/editDrink/', editDrink._id, drinkData, (res) => {
+                        //add new drink to wit ai
+                        post('/wit/addValue',
+                            {
+                                entitiId: "drinks",
+                                value: drinkData.name,
+                                expressions: expressionsD
+                            }, res => {
+                                console.log(res)
+                            })
+                        clearForm(form);
+                        getAllDrink();
+                    })
                 })
             }
         }
@@ -76,10 +126,17 @@ var getAllDrink = () => {
     get('/drink/getAllDrink', data => {
         new Promise((resolve, reject) => {
             data.forEach(item => {
+                item.optionsName = '';
                 dataMenu.find((mn) => {
                     if (mn._id == item.menu) {
                         item.menuName = mn.name;
                     }
+                })
+                dataOption.find(op => {
+                    item.options.find(o => {
+                        if (o == op._id)
+                            item.optionsName += op.value + ',';
+                    })
                 })
             });
             resolve(data)
@@ -90,3 +147,20 @@ var getAllDrink = () => {
     })
 }
 getAllDrink();
+$('#expressionD').on("keypress", function (e) {
+    let expressionC = $('ul.expressionsD')
+    if (e.which === 13) {
+        let text = $('#expressionD').val();
+        if (text != '') {
+            expressionsD.push(text);
+            expressionC.append(`<li class="list-group-item">${text}<span onclick='removeExpressionD(this)' class="glyphicon glyphicon-remove" style="float:right"></span></li>`)
+            $('#expressionD').val('');
+        }
+    }
+});
+
+var removeExpressionD = (e) => {
+    let parent = $(e).parent()
+    expressionsD.pop(parent.text())
+    parent.remove()
+}

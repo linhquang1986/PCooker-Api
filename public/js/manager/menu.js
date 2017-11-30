@@ -1,5 +1,6 @@
 var editMenu = null;
 var dataMenu = null;
+var expressions = [];
 //render data to table
 var renderTableMenu = (data) => {
     let menu = $('#tableMenu');
@@ -37,10 +38,14 @@ var getAllMenu = () => {
 getAllMenu();
 //delete menu
 var delMenu = (id) => {
+    let rs = dataMenu.find(d => { return d._id == id });
     _delete('/drink/delMenu/', id, (res) => {
-        if (res.success)
+        if (res.success) {
+            post('/wit/delValue', { entitiId: "menus", value: rs.name }, res => { })
             getAllMenu();
+        }
     })
+
 }
 //clear input
 var clearForm = (form) => {
@@ -56,6 +61,11 @@ var submitForm = (form) => {
     let menuData = {
         name: null
     }
+    let witMenu = {
+        entitiId: "menus",
+        value: null,
+        expressions: expressions
+    }
     //validate
     data.forEach(item => {
         if (item.value === "") {
@@ -66,22 +76,49 @@ var submitForm = (form) => {
             }, 2000)
             return;
         } else {
-            menuData.name = item.value
+            menuData.name = item.value;
+            witMenu.value = item.value
         }
     });
     //if no error
     if (!error) {
         //check add or edit
-        if (!editMenu)
+        if (!editMenu) {
             post('/drink/addMenu', menuData, (res) => {
-                clearForm(form);
-                getAllMenu();
-            })
-        else {
-            put('/drink/editMenu/', editMenu._id, menuData, (res) => {
+                post('/wit/addValue', witMenu, res => {
+                    console.log(res)
+                })
                 clearForm(form);
                 getAllMenu();
             })
         }
+        else {
+            post('/wit/delValue', { entitiId: "menus", value: editMenu.name }, res => {
+                put('/drink/editMenu/', editMenu._id, menuData, (res) => {
+                    post('/wit/addValue', witMenu, res => {
+                        console.log(res)
+                    })
+                    clearForm(form);
+                    getAllMenu();
+                })
+            })
+        }
     }
+}
+$('#expression').on("keypress", function (e) {
+    let expressionC = $('ul.expressions')
+    if (e.which === 13) {
+        let text = $('#expression').val();
+        if (text != '') {
+            expressions.push(text);
+            expressionC.append(`<li class="list-group-item">${text}<span onclick='removeExpression(this)' class="glyphicon glyphicon-remove" style="float:right"></span></li>`)
+            $('#expression').val('');
+        }
+    }
+});
+
+var removeExpression = (e) => {
+    let parent = $(e).parent()
+    expressions.pop(parent.text())
+    parent.remove()
 }

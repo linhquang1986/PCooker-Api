@@ -18,6 +18,21 @@ exports.addValue = (req, res) => {
         url: 'https://api.wit.ai/entities/' + entitiId + '/values',
         form: JSON.stringify(data)
     }, (err, ress, body) => {
+        if (ress.statusCode == 409 && data.expressions.length > 0) {
+            data.expressions.forEach(e => {
+                request({
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + witAiAccessToken,
+                        'Content-Type': 'application/json',
+                    },
+                    url: `https://api.wit.ai/entities/${entitiId}/values/${encodeURI(data.value)}/expressions`,
+                    form: JSON.stringify({ expression: e })
+                }, (err, ress, body) => {
+
+                })
+            })
+        }
         res.json({ res: ress, body: body, err: err });
     })
 }

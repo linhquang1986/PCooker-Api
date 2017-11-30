@@ -11,8 +11,8 @@ router.use('/wit', witai);
 router.get('/management', (req, res) => {
     res.render('management');
 })
-router.get('/witai', (req, res) => {
-    res.render('witai');
+router.get('/', (req, res) => {
+    res.render('management');
 })
 
 module.exports = router;

@@ -4,6 +4,7 @@ var con = require('../connection');
 var drinkSchema = new Schema({
     name: { type: String, default: true, required: true, unique: true },
     menu: { type: Schema.Types.ObjectId, ref: 'Menu' },
+    options: [],
     price: { type: Number, required: true, default: 0 }
 }, { versionKey: false });
 

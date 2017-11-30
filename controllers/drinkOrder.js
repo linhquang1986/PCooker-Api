@@ -48,11 +48,13 @@ exports.addMenu = (req, res) => {
     })
 }
 exports.addDrink = (req, res) => {
+    let options = req.body.options;
     let drink = new Drink({
         name: req.body.name,
         menu: req.body.menuId,
         price: req.body.price
     })
+    drink.options = options.slice();
     drink.save(err => {
         if (err) return res.status(400).send(err);
         res.status(200) && res.json({ success: true });
@@ -73,12 +75,14 @@ exports.editMenu = (req, res) => {
 
 exports.editDrink = (req, res) => {
     let id = req.params.id;
+    let options = req.body.options;
     Drink.findById(id, (err, drink) => {
         drink.name = req.body.name;
         if (req.body.menuId && req.body.menuId != '')
             drink.menu = req.body.menuId;
         if (req.body.price && req.body.price != '')
             drink.price = req.body.price;
+        drink.options = options.slice();
         drink.save((err, updateDrink) => {
             if (err) return res.status(400).send(err);
             res.status(200).send(updateDrink);
@@ -95,7 +99,7 @@ exports.delMenu = (req, res) => {
                 res.status(200).send({ message: 'Delete successfully', success: true });
             })
         } else {
-            res.status(400).send({ message: 'Can not delete, Please clear all constraints!', success: true })
+            res.status(400).send({ message: 'Can not delete, Please clear all constraints!', success: false })
         }
     })
 }
@@ -116,9 +120,16 @@ exports.getAllOption = (req, res) => {
 }
 exports.delOption = (req, res) => {
     let id = req.params.id;
-    Option.findOneAndRemove({ _id: ObjectId(id) }, err => {
+    Drink.findOne({ 'options': id }, (err, drink) => {
         if (err) return res.status(400).send(err);
-        res.status(200).send({ message: 'Delete successfully', success: true });
+        if (drink) {
+            return res.status(400).send({ message: 'Can not delete, Please clear all constraints!', success: false });
+        } else {
+            Option.findOneAndRemove({ _id: ObjectId(id) }, err => {
+                if (err) return res.status(400).send(err);
+                res.status(200).send({ message: 'Delete successfully', success: true });
+            })
+        }
     })
 }
 
